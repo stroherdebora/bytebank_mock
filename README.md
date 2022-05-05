@@ -1,4 +1,3 @@
-=======
 # bytebank_mock
 Aplicação para estudo de Testes com Mock.
 
