@@ -1,13 +1,16 @@
 import 'package:bytebank/models/transferencia.dart';
-import 'package:bytebank/models/transferencias.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'formulario.dart';
 
 const _tituloAppBar = 'Transferências';
 
-class ListaTransferencias extends StatelessWidget {
-  // final List<Transferencia?> _transferencias = [];
+class ListaTransferencias extends StatefulWidget {
+  @override
+  _ListaTransferenciasState createState() => _ListaTransferenciasState();
+}
+
+class _ListaTransferenciasState extends State<ListaTransferencias> {
+  final List<Transferencia?> _transferencias = [];
 
   @override
   Widget build(BuildContext context) {
@@ -15,24 +18,30 @@ class ListaTransferencias extends StatelessWidget {
       appBar: AppBar(
         title: Text(_tituloAppBar),
       ),
-      body: Consumer<Transferencias>(builder: (context, transferencias, child) {
-        return ListView.builder(
-          itemCount: transferencias.transferencias.length,
-          itemBuilder: (context, indice) {
-            final transferencia = transferencias.transferencias[indice];
-            return ItemTransferencia(transferencia);
-          },
-        );
-      }),
+      body: ListView.builder(
+        itemCount: _transferencias.length,
+        itemBuilder: (context, indice) {
+          final transferencia = _transferencias[indice];
+          return ItemTransferencia(transferencia!);
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) {
             return FormTransferencia();
-          }));
+          })).then(
+            (transferenciaRecebida) => _atualiza(transferenciaRecebida),
+          );
         },
       ),
     );
+  }
+
+  void _atualiza(Transferencia? transferenciaRecebida) {
+    if (transferenciaRecebida != null) {
+      setState(() => _transferencias.add(transferenciaRecebida));
+    }
   }
 }
 
@@ -46,8 +55,8 @@ class ItemTransferencia extends StatelessWidget {
     return Card(
       child: ListTile(
         leading: Icon(Icons.monetization_on),
-        title: Text(_transferencia.toStringValor()),
-        subtitle: Text(_transferencia.toStringConta()),
+        title: Text(_transferencia.valor.toString()),
+        subtitle: Text(_transferencia.conta.toString()),
       ),
     );
   }
